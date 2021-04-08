@@ -9,7 +9,7 @@ import { ExpressPeerServer  } from 'peer';
 
 const app = express();
 const serve = server.Server(app);
-const io = socketIO(serve);
+const io = socketIO(serve,  { origins: '*:*'});
 const port = process.env.PORT || 5000;
 
 
