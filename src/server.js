@@ -5,10 +5,37 @@ import socketIO from 'socket.io';
 import { v4 as uuidV4 } from 'uuid';
 // import './mailer.js';
 
+import { ExpressPeerServer  } from 'peer';
+
 const app = express();
 const serve = server.Server(app);
 const io = socketIO(serve);
 const port = process.env.PORT || 5000;
+
+
+
+serve.on('error', e => {
+    console.error(e);
+});
+
+
+console.log('Eita', serve);
+
+const peerServer = ExpressPeerServer(serve, {
+    debug: true,
+});
+
+app.use('/peerjs', peerServer);
+
+peerServer.on('connection', function(id) {
+    console.log('lolis', id)
+  console.log(server._clients)
+});
+
+peerServer.on('disconnect', function(id) {
+    console.log('lolis', id + "deconnected")
+});
+
 
 // Middlewares
 app.use(cors());
@@ -43,10 +70,8 @@ io.on('connection', socket => {
     });
 });
 
+
 // Server listen initilized
 serve.listen(port, () => {
     console.log(`Listening on the port ${port}`);
-}).on('error', e => {
-    console.error(e);
 });
-
